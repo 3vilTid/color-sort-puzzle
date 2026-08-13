@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎨 Color Sort - Puzzle Game</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#0f0f1f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="loader"></div>
+        <h2>🎨 Color Sort</h2>
+        <div class="progress-bar"><div id="progressFill"></div></div>
+    </div>
+
+    <!-- MENU -->
+    <div id="menu" class="screen active">
+        <div class="menu-content">
+            <div class="menu-header">
+                <h1>🎨 Color Sort</h1>
+                <p class="subtitle">Sort. Strategize. Conquer.</p>
+            </div>
+            
+            <div class="menu-stats">
+                <div class="stat-card">
+                    <span class="stat-icon">🏆</span>
+                    <span class="stat-value" id="menuLevel">1</span>
+                    <span class="stat-label">Level</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-value" id="menuStars">0</span>
+                    <span class="stat-label">Stars</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🔥</span>
+                    <span class="stat-value" id="menuStreak">0</span>
+                    <span class="stat-label">Streak</span>
+                </div>
+            </div>
+
+            <div class="menu-buttons">
+                <button id="playBtn" class="btn primary pulse">▶ Play</button>
+                <button id="dailyBtn" class="btn daily">📅 Daily Challenge</button>
+                <div class="menu-row">
+                    <button id="levelsBtn" class="btn secondary small">📊 Levels</button>
+                    <button id="shopBtn" class="btn secondary small">🛍️ Shop</button>
+                    <button id="leaderboardBtn" class="btn secondary small">🏅 Top</button>
+                </div>
+                <div class="menu-row">
+                    <button id="achievementsBtn" class="btn secondary small">🏆 Achievements</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME -->
+    <div id="game" class="screen">
+        <div class="game-header">
+            <button id="menuBtn" class="icon-btn">✕</button>
+            <div class="game-info">
+                <span id="levelDisplay">Level 1</span>
+                <span class="streak-display">🔥 <span id="gameStreak">0</span></span>
+            </div>
+            <span id="moveDisplay">Moves: 0</span>
+            <button id="soundToggle" class="icon-btn">🔊</button>
+        </div>
+        
+        <div id="timerDisplay" style="display:none; text-align:center; font-size:1.2rem; padding:4px 0; color:#f9ca24;">⏱️ 60s</div>
+        
+        <div id="gameContainer"></div>
+        
+        <div class="game-footer">
+            <button id="undoBtn" class="icon-btn">↩️</button>
+            <button id="resetBtn" class="icon-btn">🔄</button>
+            <button id="hintBtn" class="icon-btn">💡</button>
+            <button id="shuffleBtn" class="icon-btn">🔀</button>
+        </div>
+        <div id="adContainer"></div>
+    </div>
+
+    <!-- LEVEL COMPLETE -->
+    <div id="levelComplete" class="modal hidden">
+        <div class="modal-content victory">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <h2>🎉 Level Complete!</h2>
+            <div class="result-stats">
+                <div class="result-stat">
+                    <span>Moves</span>
+                    <strong id="movesUsed">0</strong>
+                </div>
+                <div class="result-stat">
+                    <span>Best</span>
+                    <strong id="bestMoves">-</strong>
+                </div>
+                <div class="result-stat">
+                    <span>Streak</span>
+                    <strong>🔥 <span id="resultStreak">0</span></strong>
+                </div>
+            </div>
+            <div id="perfectBonus" style="font-size:1.2rem; color:#f9ca24; margin:8px 0; display:none;">🌟 Perfect! +10 bonus stars!</div>
+            <div class="star-rating">
+                <span class="star" id="star1">⭐</span>
+                <span class="star" id="star2">⭐</span>
+                <span class="star" id="star3">⭐</span>
+            </div>
+            <div class="level-actions">
+                <button id="nextBtn" class="btn primary">Next →</button>
+                <button id="watchAdBtn" class="btn ad-btn">📺 +10 Stars</button>
+                <button id="shareBtn" class="btn secondary small" style="margin-top:4px;">📤 Share Score</button>
+                <button id="continueBtn" class="btn secondary small">Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAILY CHALLENGE -->
+    <div id="dailyModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>📅 Daily Challenge</h2>
+            <p id="dailyDesc">Complete today's puzzle for bonus stars!</p>
+            <div class="daily-reward">⭐ <span id="dailyReward">15</span> bonus stars</div>
+            <button id="dailyPlayBtn" class="btn primary">▶ Play</button>
+            <button class="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- SHOP -->
+    <div id="shop" class="modal hidden">
+        <div class="modal-content">
+            <h2>🛍️ Shop</h2>
+            <div class="stars-display">⭐ <span id="shopStars">0</span></div>
+            <div class="shop-items">
+                <div class="shop-item" data-skin="default">
+                    <span>🎨 Classic</span>
+                    <span class="skin-preview"></span>
+                    <button class="buyBtn equipped" disabled>✓ Owned</button>
+                </div>
+                <div class="shop-item" data-skin="neon">
+                    <span>💜 Neon</span>
+                    <span class="skin-preview neon-preview"></span>
+                    <button class="buyBtn" data-skin="neon">⭐ 50</button>
+                </div>
+                <div class="shop-item" data-skin="nature">
+                    <span>🌿 Nature</span>
+                    <span class="skin-preview nature-preview"></span>
+                    <button class="buyBtn" data-skin="nature">⭐ 100</button>
+                </div>
+                <div class="shop-item" data-skin="premium">
+                    <span>💎 Premium</span>
+                    <span class="skin-preview premium-preview"></span>
+                    <button class="buyBtn" data-skin="premium">⭐ 200</button>
+                </div>
+                <div class="shop-item" data-skin="sunset">
+                    <span>🌅 Sunset</span>
+                    <span class="skin-preview sunset-preview"></span>
+                    <button class="buyBtn" data-skin="sunset">⭐ 150</button>
+                </div>
+            </div>
+            <button class="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- LEVELS -->
+    <div id="levels" class="modal hidden">
+        <div class="modal-content">
+            <h2>📊 Levels</h2>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:8px;">🔵 = Normal | ⏱️ = Timed | 🧩 = Puzzle</p>
+            <div id="levelGrid"></div>
+            <button class="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboard" class="modal hidden">
+        <div class="modal-content">
+            <h2>🏅 Leaderboard</h2>
+            <div id="leaderboardList"></div>
+            <button id="refreshLeaderboard" class="btn secondary small" style="margin:8px auto;">🔄 Refresh</button>
+            <button class="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="achievementsModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🏆 Achievements</h2>
+            <div id="achievementList" class="achievement-grid"></div>
+            <button class="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script src="monetization.js"></script>
+    <script src="analytics.js"></script>
+</body>
+</html>
